@@ -1,12 +1,23 @@
+import { Entity } from "../../../shared/domain/Entity";
+import type { EntityId } from "../../../shared/domain/EntityId";
 import type { TargetWord } from "./TargetWord";
 
 /**
  * プレイヤーが現在入力中の単語を管理するEntity
  */
-export class ActiveWord {
+export class ActiveWord extends Entity<EntityId> {
 	private _currentIndex = 0;
 
-	constructor(public readonly target: TargetWord) {}
+	private constructor(
+		id: EntityId,
+		public readonly target: TargetWord,
+	) {
+		super(id);
+	}
+
+	public static create(id: EntityId, target: TargetWord): ActiveWord {
+		return new ActiveWord(id, target);
+	}
 
 	/**
 	 * キー入力が正しい文字か判定し、正しければ内部状態を進める
@@ -20,7 +31,6 @@ export class ActiveWord {
 
 		const expectedChar = this.target.reading[this._currentIndex];
 		// TODO: ローマ字の揺らぎ吸収（shi/siなど）は後日ストラテジー等で拡張する。
-		// 初回は完全一致（大文字小文字は無視）のみサポート。
 		if (inputChar.toLowerCase() === expectedChar.toLowerCase()) {
 			this._currentIndex++;
 			return true;
