@@ -6,17 +6,20 @@ import { readFile } from "node:fs/promises"
 const DOCS_SCOPE = "https://www.googleapis.com/auth/documents"
 const TOKEN_URL = "https://oauth2.googleapis.com/token"
 
-// ターゲットファイルの定義（環境変数で上書き可能）
 const syncTargets = [
   {
-    name: "TypingUniverse アーキテクチャ設計",
-    markdownPath: process.env.DOCS_ARCHITECTURE_MD ?? "docs/01-architecture/architecture.md",
-    documentId: process.env.DOCS_ARCHITECTURE_DOC_ID
+    name: "TypingUniverse プロダクト仕様",
+    markdownPath:
+      process.env.NOTEBOOKLM_PRODUCT_MD ??
+      "docs/notebooklm/プロダクト仕様.md",
+    documentId: process.env.NOTEBOOKLM_PRODUCT_DOC_ID
   },
   {
-    name: "TypingUniverse ユビキタス言語",
-    markdownPath: process.env.DOCS_UBIQUITOUS_MD ?? "docs/02-domain-models/ubiquitous-language.md",
-    documentId: process.env.DOCS_UBIQUITOUS_DOC_ID
+    name: "TypingUniverse エンジニアリング設計",
+    markdownPath:
+      process.env.NOTEBOOKLM_ENGINEERING_MD ??
+      "docs/notebooklm/エンジニアリング設計.md",
+    documentId: process.env.NOTEBOOKLM_ENGINEERING_DOC_ID
   }
 ]
 
@@ -118,7 +121,7 @@ function utf16Length(value) {
 
 function buildDocumentBody(markdown, title) {
   const normalized = markdown.replace(/\r\n/g, "\n").trimEnd()
-  return `${normalized}\n\nSynced to Google Docs from ${title} at ${new Date().toISOString()}.\n`
+  return `${normalized}\n\nSynced to Google Docs for NotebookLM from ${title}.\n`
 }
 
 function collectHeadingStyleRequests(text) {

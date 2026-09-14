@@ -1,12 +1,11 @@
-name: Sync Google Docs
+name: Sync NotebookLM Google Docs
 
 on:
   push:
     branches:
       - main
     paths:
-      - "docs/01-architecture/**"
-      - "docs/02-domain-models/**"
+      - "docs/notebooklm/**"
       - "scripts/sync-google-docs.mjs"
       - ".github/workflows/sync-google-docs.yml"
   workflow_dispatch:
@@ -31,6 +30,6 @@ jobs:
       - name: Sync Markdown sources to Google Docs
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
-          DOCS_ARCHITECTURE_DOC_ID: ${{ secrets.DOCS_ARCHITECTURE_DOC_ID }}
-          DOCS_UBIQUITOUS_DOC_ID: ${{ secrets.DOCS_UBIQUITOUS_DOC_ID }}
+          NOTEBOOKLM_PRODUCT_DOC_ID: ${{ secrets.NOTEBOOKLM_PRODUCT_DOC_ID }}
+          NOTEBOOKLM_ENGINEERING_DOC_ID: ${{ secrets.NOTEBOOKLM_ENGINEERING_DOC_ID }}
         run: node scripts/sync-google-docs.mjs
