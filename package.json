@@ -1,0 +1,38 @@
+{
+  "name": "tmp-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "prepare": "husky",
+    "test": "vitest",
+    "check": "biome check --write ."
+  },
+  "dependencies": {
+    "next": "16.3.5",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.13",
+    "@tailwindcss/postcss": "^4",
+    "@testing-library/dom": "10.4.2",
+    "@testing-library/react": "16.3.3",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "husky": "9.1.7",
+    "jsdom": "29.1.1",
+    "lint-staged": "16.4.0",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vitest": "5.0.0"
+  },
+  "lint-staged": {
+    "*.{js,ts,jsx,tsx}": [
+      "biome check --write --no-errors-on-unmatched"
+    ]
+  }
+}
