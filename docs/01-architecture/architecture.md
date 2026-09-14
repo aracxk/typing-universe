@@ -42,3 +42,28 @@ FSDでは「機能（Feature）」単位で縦割りにすることで、機能�
 
 FSDの `entities` レイヤー内に、DDDの概念（Entity, Value Object）を配置します。
 データベースは使用しませんが、ゲームのスコアや状態管理において、不正な値の混入を防ぐ（Fail-Fast）仕組みとしてValue Objectを活用します。
+
+## 5. DDD基盤クラスの活用 (shared/domain)
+
+より堅牢な設計とするため、`src/shared/domain/` および `src/shared/core/` に以下の基底クラス群を配置し、すべてのドメインモデルで利用します。
+
+- **`Result<T, E>`**: 成功/失敗を型安全に返す仕組み。例外の `throw` を排除します。
+- **`Entity<ID>`**: 識別子による同一性保証（`equals`）を強制します。
+- **`ValueObject`**: 完全不変性と、値による同一性保証を強制します。
+- **`DomainError` / `DomainErrorCode`**: システム全体のエラーを一元管理し、機械判別可能にします。
+
+## 6. Hooksの管理・配置ルール
+
+UIコンポーネント（`.tsx`）を純粋な描画層として保つため、状態管理や副作用（`useState`, `useEffect`等）は必ず Custom Hook に隔離し、以下のルールに従って配置します。
+
+### ① 機能固有のHooks (features層)
+- **配置先**: `src/features/[機能名]/hooks/`
+- **役割**: ドメインエンティティ（entities）を操作し、特定のユースケースやビジネスロジックを実行するHook。
+- **例**: `src/features/core/hooks/useTypingSession.ts`（タイピングの正誤判定やスコア状態の管理）
+
+### ② 汎用的なHooks (shared層)
+- **配置先**: `src/shared/lib/hooks/`
+- **役割**: ビジネスロジックを持たない、純粋な技術的ユーティリティ。プロジェクト全体で使い回すHook。
+- **例**: `useKeyPress.ts`（キーボードイベントの監視）、`useAnimationFrame.ts`（ゲームループ用のタイマー）
+
+これにより、UI層は「Hooksが返す状態の表示」と「ユーザーアクションのHooksへの伝達」のみに徹することができます。
