@@ -1,7 +1,7 @@
 # コーディング・設計規約 (Conventions)
 
 本ドキュメントは、`typing-universe` プロジェクト全体で一貫した設計・命名・構造を保つための規約です。
-`ai-note-market` の思想を引き継ぎつつ、Feature-Sliced Design (FSD) に適合させます。
+Feature-Sliced Design (FSD) に適合させた独自の構造を採用しています。
 
 ---
 

@@ -1,6 +1,6 @@
 # Google Docs 自動同期設定手順
 
-本プロジェクトでは `mtf-tradeai` での知見を活かし、JulesやSparkといった自律エージェントに機能開発（PR作成）をさせるための情報源として、GitHubからGoogle Docs（NotebookLM）へ「プロダクト仕様」と「エンジニアリング設計」を自動同期する仕組みを導入しています。
+本プロジェクトでは、JulesやSparkといった自律エージェントに機能開発（PR作成）をさせるための情報源として、GitHubからGoogle Docs（NotebookLM）へ「プロダクト仕様」と「エンジニアリング設計」を自動同期する仕組みを導入しています。
 
 ## 同期対象
 - `docs/notebooklm/プロダクト仕様.md`
