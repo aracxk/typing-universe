@@ -8,7 +8,8 @@
     "start": "next start",
     "prepare": "husky",
     "test": "vitest",
-    "check": "biome check --write ."
+    "check": "biome check --write .",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "next": "16.3.5",
