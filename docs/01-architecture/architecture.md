@@ -42,3 +42,12 @@ FSDでは「機能（Feature）」単位で縦割りにすることで、機能�
 
 FSDの `entities` レイヤー内に、DDDの概念（Entity, Value Object）を配置します。
 データベースは使用しませんが、ゲームのスコアや状態管理において、不正な値の混入を防ぐ（Fail-Fast）仕組みとしてValue Objectを活用します。
+
+## 5. DDD基盤クラスの活用 (shared/domain)
+
+より堅牢な設計とするため、`src/shared/domain/` および `src/shared/core/` に以下の基底クラス群を配置し、すべてのドメインモデルで利用します。
+
+- **`Result<T, E>`**: 成功/失敗を型安全に返す仕組み。例外の `throw` を排除します。
+- **`Entity<ID>`**: 識別子による同一性保証（`equals`）を強制します。
+- **`ValueObject`**: 完全不変性と、値による同一性保証を強制します。
+- **`DomainError` / `DomainErrorCode`**: システム全体のエラーを一元管理し、機械判別可能にします。

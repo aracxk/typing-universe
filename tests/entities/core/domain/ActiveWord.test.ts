@@ -14,6 +14,33 @@ describe("TargetWord", () => {
 			expect(result.error.code).toBe("INVALID_TARGET_WORD_READING");
 		}
 	});
+
+	it("正常な単語と読みを渡した場合は成功する", () => {
+		const result = TargetWord.create("林檎", "ringo");
+		expect(result.success).toBe(true);
+		if (result.success) {
+			expect(result.value.word).toBe("林檎");
+			expect(result.value.reading).toBe("ringo");
+		}
+	});
+
+	it("equals() で同一の単語・読みを持つオブジェクトは true と判定される", () => {
+		const word1 = Result.unwrap(TargetWord.create("林檎", "ringo"));
+		const word2 = Result.unwrap(TargetWord.create("林檎", "ringo"));
+		expect(word1.equals(word2)).toBe(true);
+	});
+
+	it("equals() で異なる読みを持つオブジェクトは false と判定される", () => {
+		const word1 = Result.unwrap(TargetWord.create("林檎", "ringo"));
+		const word2 = Result.unwrap(TargetWord.create("林檎", "apple"));
+		expect(word1.equals(word2)).toBe(false);
+	});
+
+	it("equals() で null または undefined が渡された場合は false と判定される", () => {
+		const word1 = Result.unwrap(TargetWord.create("林檎", "ringo"));
+		expect(word1.equals(null as any)).toBe(false);
+		expect(word1.equals(undefined as any)).toBe(false);
+	});
 });
 
 describe("ActiveWord", () => {

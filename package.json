@@ -9,7 +9,8 @@
     "prepare": "husky",
     "test": "vitest",
     "check": "biome check --write src tests",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "coverage": "vitest run --coverage"
   },
   "dependencies": {
     "next": "16.3.5",
@@ -24,6 +25,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitest/coverage-v8": "^5.0.0",
     "husky": "9.1.7",
     "jsdom": "29.1.1",
     "lint-staged": "16.4.0",
