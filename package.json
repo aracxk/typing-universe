@@ -8,7 +8,7 @@
     "start": "next start",
     "prepare": "husky",
     "test": "vitest",
-    "check": "biome check --write .",
+    "check": "biome check --write src tests",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -29,6 +29,7 @@
     "lint-staged": "16.4.0",
     "tailwindcss": "^4",
     "typescript": "^5",
+    "vite": "^8.3.0",
     "vitest": "5.0.0"
   },
   "lint-staged": {
