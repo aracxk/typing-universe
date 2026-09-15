@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useRef, useSyncExternalStore } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import { ActiveWord } from "../../../entities/core/domain/ActiveWord";
 import { TargetWord } from "../../../entities/core/domain/TargetWord";
 import { Invader } from "../../../entities/invader/domain/Invader";
 import { InvaderGameEngine } from "../../../entities/invader/domain/InvaderGameEngine";
-import { Result } from "../../../shared/core/Result";
 import { EntityId } from "../../../shared/domain/EntityId";
 
 class GameStore {
@@ -13,7 +12,12 @@ class GameStore {
 	private rafId: number | null = null;
 	private invaderIdCounter = 0;
 	private nextSpawnTime = 0;
-	public tickCount = 0; // Reactの再レンダリングトリガー用
+
+	// Reactへの再描画トリガー用
+	public tickCount = 0;
+	private lastScore = 0;
+	private lastLives = 3;
+	private lastStatus = "playing";
 
 	constructor() {
 		this.engine = InvaderGameEngine.create(EntityId.create("engine"), 600);
@@ -30,10 +34,20 @@ class GameStore {
 		return this.tickCount;
 	};
 
-	private notify() {
-		this.tickCount++;
-		for (const listener of this.listeners) {
-			listener();
+	private notifyIfChanged() {
+		if (
+			this.engine.score !== this.lastScore ||
+			this.engine.lives !== this.lastLives ||
+			this.engine.status !== this.lastStatus
+		) {
+			this.lastScore = this.engine.score;
+			this.lastLives = this.engine.lives;
+			this.lastStatus = this.engine.status;
+
+			this.tickCount++;
+			for (const listener of this.listeners) {
+				listener();
+			}
 		}
 	}
 
@@ -52,7 +66,7 @@ class GameStore {
 			}
 
 			this.engine.tick(deltaTime);
-			this.notify();
+			this.notifyIfChanged(); // Canvasが独立描画するため、スコア・ライフ変動時のみReactを再描画する
 			this.rafId = requestAnimationFrame(loop);
 		};
 		this.rafId = requestAnimationFrame(loop);
@@ -69,7 +83,7 @@ class GameStore {
 		if (this.engine.status === "gameover") return;
 		if (/^[a-z]$/i.test(key)) {
 			this.engine.type(key);
-			this.notify();
+			this.notifyIfChanged();
 		}
 	}
 
@@ -79,6 +93,9 @@ class GameStore {
 			{ w: "蜜柑", r: ["mikan"] },
 			{ w: "西瓜", r: ["suika"] },
 			{ w: "葡萄", r: ["budou"] },
+			{ w: "苺", r: ["ichigo"] },
+			{ w: "無花果", r: ["ichijiku"] },
+			{ w: "檸檬", r: ["remon"] },
 		];
 		const pick = words[Math.floor(Math.random() * words.length)];
 		const targetResult = TargetWord.create(pick.w, pick.r);
@@ -90,7 +107,7 @@ class GameStore {
 			targetResult.value,
 		);
 
-		const x = Math.random() * 400 + 50;
+		const x = Math.random() * 400 + 100;
 		const speed = Math.random() * 30 + 30;
 
 		const invResult = Invader.create(
@@ -115,7 +132,6 @@ export function useInvaderGame() {
 
 	const store = storeRef.current;
 
-	// Reactに状態変更を検知させるため、tickCountを監視させる
 	useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
 
 	useEffect(() => {
@@ -132,6 +148,5 @@ export function useInvaderGame() {
 		return () => window.removeEventListener("keydown", handleKeyDown);
 	}, [store]);
 
-	// 実態（エンジン）はそのまま返す
 	return store.engine;
 }
