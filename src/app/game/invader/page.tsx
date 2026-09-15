@@ -12,7 +12,12 @@ export default function InvaderGamePage() {
 				<div className="text-xl font-bold tracking-widest text-emerald-400">
 					SCORE: {engine.score}
 				</div>
-				<div className="text-sm text-slate-400">TYPE TO DEFEND</div>
+				<div className="flex items-center space-x-4">
+					<div className="text-rose-400 font-bold">
+						SHIELD: {"[+] ".repeat(Math.max(0, engine.lives))}
+					</div>
+					<div className="text-sm text-slate-400">TYPE TO DEFEND</div>
+				</div>
 			</div>
 
 			{/* Game Area */}
@@ -21,7 +26,7 @@ export default function InvaderGamePage() {
 					const isFocused = engine.focusedInvaderId?.equals(invader.id);
 					const activeWord = invader.activeWord;
 					const currentIndex = activeWord.currentIndex;
-					const readings = activeWord.target.readings[0]; // 単純化のため1つ目の読みを表示
+					const readings = activeWord.target.readings[0];
 
 					const typed = readings.slice(0, currentIndex);
 					const remaining = readings.slice(currentIndex);

@@ -12,7 +12,7 @@ describe("Invader", () => {
 		return ActiveWord.create(EntityId.create("word-1"), target);
 	};
 
-	it("正常な値でInvaderが生成できる", () => {
+	it("正常な値を指定した場合、成功してInvaderが生成される", () => {
 		const activeWord = createTestActiveWord();
 		const result = Invader.create(
 			EntityId.create("inv-1"),
@@ -31,7 +31,7 @@ describe("Invader", () => {
 		}
 	});
 
-	it("X座標が負の値の場合はエラーになる", () => {
+	it("X座標が負の値の場合、INVALID_INVADER_COORDINATEエラーになる", () => {
 		const result = Invader.create(
 			EntityId.create("inv-1"),
 			createTestActiveWord(),
@@ -46,7 +46,7 @@ describe("Invader", () => {
 		}
 	});
 
-	it("Y座標が負の値の場合はエラーになる", () => {
+	it("Y座標が負の値の場合、INVALID_INVADER_COORDINATEエラーになる", () => {
 		const result = Invader.create(
 			EntityId.create("inv-1"),
 			createTestActiveWord(),
@@ -61,7 +61,7 @@ describe("Invader", () => {
 		}
 	});
 
-	it("速度が0以下の場合はエラーになる", () => {
+	it("速度が0以下の場合、INVALID_INVADER_SPEEDエラーになる", () => {
 		const result = Invader.create(
 			EntityId.create("inv-1"),
 			createTestActiveWord(),
@@ -76,7 +76,7 @@ describe("Invader", () => {
 		}
 	});
 
-	it("tick() を呼ぶと deltaTimeMs (ms) と speed (px/sec) に応じて Y座標 が増加する", () => {
+	it("tick() を呼んだ場合、deltaTimeMsとspeedに応じてY座標が増加する", () => {
 		const invader = Result.unwrap(
 			Invader.create(
 				EntityId.create("inv-1"),
@@ -94,7 +94,7 @@ describe("Invader", () => {
 		expect(invader.y).toBe(80);
 	});
 
-	it("ActiveWord の入力が完了すると isDead() が true になる", () => {
+	it("ActiveWordの入力が完了した場合、isDead()がtrueになる", () => {
 		const activeWord = createTestActiveWord();
 		const invader = Result.unwrap(
 			Invader.create(EntityId.create("inv-1"), activeWord, 10, 20, 100),

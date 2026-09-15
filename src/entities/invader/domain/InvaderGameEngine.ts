@@ -7,6 +7,7 @@ export type GameStatus = "playing" | "gameover";
 export class InvaderGameEngine extends Entity<EntityId> {
 	private _invaders: Invader[] = [];
 	private _score = 0;
+	private _lives = 3;
 	private _status: GameStatus = "playing";
 	private _focusedInvaderId: EntityId | null = null;
 	private _gameHeight: number;
@@ -28,12 +29,22 @@ export class InvaderGameEngine extends Entity<EntityId> {
 	public tick(deltaTimeMs: number): void {
 		if (this._status !== "playing") return;
 
-		for (const invader of this._invaders) {
+		for (let i = this._invaders.length - 1; i >= 0; i--) {
+			const invader = this._invaders[i];
 			invader.tick(deltaTimeMs);
 
 			if (invader.y >= this._gameHeight) {
-				this._status = "gameover";
-				return;
+				this._lives -= 1;
+				// 防衛ラインに到達した敵は消滅する
+				if (this._focusedInvaderId?.equals(invader.id)) {
+					this._focusedInvaderId = null;
+				}
+				this._invaders.splice(i, 1);
+
+				if (this._lives <= 0) {
+					this._status = "gameover";
+					return; // gameoverになったらこれ以上の処理を打ち切る
+				}
 			}
 		}
 	}
@@ -86,6 +97,10 @@ export class InvaderGameEngine extends Entity<EntityId> {
 
 	get score(): number {
 		return this._score;
+	}
+
+	get lives(): number {
+		return this._lives;
 	}
 
 	get status(): GameStatus {
