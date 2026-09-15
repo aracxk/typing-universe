@@ -71,7 +71,7 @@ UIコンポーネント（`.tsx`）を純粋な描画層として保つため、
 ## 7. UI描画戦略 (DOM vs Canvas)
 
 ゲームプレイ画面などの高頻度更新・リッチ演出が求められる領域と、メニューなどの静的領域で描画手法を使い分けます。
-詳細は [UI描画戦略 (ui-rendering-strategy.md)](./ui-rendering-strategy.md) を参照してください。
+詳細は [ADR 0003: UI描画戦略](../03-adr/0003-ui-rendering-strategy.md) を参照してください。
 
 ## 8. ロジックと描画の完全分離による戦略的恩恵 (Strategic Benefits of Separation)
 
