@@ -67,3 +67,8 @@ UIコンポーネント（`.tsx`）を純粋な描画層として保つため、
 - **例**: `useKeyPress.ts`（キーボードイベントの監視）、`useAnimationFrame.ts`（ゲームループ用のタイマー）
 
 これにより、UI層は「Hooksが返す状態の表示」と「ユーザーアクションのHooksへの伝達」のみに徹することができます。
+
+## 7. UI描画戦略 (DOM vs Canvas)
+
+ゲームプレイ画面などの高頻度更新・リッチ演出が求められる領域と、メニューなどの静的領域で描画手法を使い分けます。
+詳細は [UI描画戦略 (ui-rendering-strategy.md)](./ui-rendering-strategy.md) を参照してください。
