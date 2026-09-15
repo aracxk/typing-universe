@@ -1,5 +1,3 @@
-import type { SoundEngine } from "../../../../shared/lib/audio/SoundEngine";
-
 type Props = {
 	soundEnabled: boolean;
 	onToggleSound: () => void;

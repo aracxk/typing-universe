@@ -153,8 +153,11 @@ describe("InvaderGameEngine", () => {
 			expect(engine.rank).toBe("C (JUNIOR DEV)");
 
 			const setScoreAndAcc = (s: number, acc: number) => {
+				// biome-ignore lint/suspicious/noExplicitAny: テスト目的でのプライベート変数アクセス
 				(engine as any)._score = s;
+				// biome-ignore lint/suspicious/noExplicitAny: テスト目的でのプライベート変数アクセス
 				(engine as any)._totalTyped = 100;
+				// biome-ignore lint/suspicious/noExplicitAny: テスト目的でのプライベート変数アクセス
 				(engine as any)._correctTyped = acc;
 			};
 
