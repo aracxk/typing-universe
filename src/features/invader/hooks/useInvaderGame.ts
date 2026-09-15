@@ -19,7 +19,10 @@ export function useInvaderGame() {
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
 			if (e.ctrlKey || e.metaKey || e.altKey) return;
-			if (e.code === "Space" && store.engine.status !== "playing") {
+			if (
+				e.code === "Space" &&
+				(store.engine.status !== "playing" || !store.rafId)
+			) {
 				e.preventDefault();
 				store.start();
 				return;
@@ -30,5 +33,9 @@ export function useInvaderGame() {
 		return () => window.removeEventListener("keydown", handleKeyDown);
 	}, [store]);
 
-	return { engine: store.engine, sound: store.sound };
+	return {
+		engine: store.engine,
+		sound: store.sound,
+		hasStarted: store.hasStarted,
+	};
 }

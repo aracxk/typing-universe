@@ -10,8 +10,8 @@ import { useInvaderGame } from "../../../features/invader/hooks/useInvaderGame";
 import { useInvaderUI } from "../../../features/invader/hooks/useInvaderUI";
 
 export default function InvaderGamePage() {
-	const { engine, sound } = useInvaderGame();
-	const { soundEnabled, hasStarted, toggleSound } = useInvaderUI(engine, sound);
+	const { engine, sound, hasStarted } = useInvaderGame();
+	const { soundEnabled, toggleSound } = useInvaderUI(sound);
 
 	return (
 		<main className="min-h-screen flex flex-col items-center justify-center p-2 sm:p-6 bg-[#05070f] text-slate-200 font-mono overflow-x-hidden selection:bg-cyan-900">

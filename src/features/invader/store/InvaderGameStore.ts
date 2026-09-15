@@ -11,11 +11,13 @@ export class InvaderGameStore {
 
 	private listeners: Set<() => void> = new Set();
 	private lastTime = performance.now();
-	private rafId: number | null = null;
+	public rafId: number | null = null;
 	private invaderIdCounter = 0;
 	private nextSpawnTime = 0;
 
 	public tickCount = 0;
+	public hasStarted = false;
+	private lastHasStarted = false;
 	private lastScore = 0;
 	private lastLives = 3;
 	private lastStatus = "playing";
@@ -92,6 +94,7 @@ export class InvaderGameStore {
 		this.lastCombo = 0;
 		this.lastStage = 1;
 		this.lastKills = 0;
+		this.hasStarted = true;
 		this.lastFocusedId = null;
 		this.invaderIdCounter = 0;
 		this.tickCount++;
