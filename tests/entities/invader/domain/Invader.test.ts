@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { ActiveWord } from "../../../../src/entities/core/domain/ActiveWord";
-import { TargetWord } from "../../../../src/entities/core/domain/TargetWord";
 import { Invader } from "../../../../src/entities/invader/domain/Invader";
 import { InvaderError } from "../../../../src/entities/invader/domain/InvaderError";
+import { ActiveWord } from "../../../../src/entities/word/domain/ActiveWord";
+import { TargetWord } from "../../../../src/entities/word/domain/TargetWord";
 import { Result } from "../../../../src/shared/core/Result";
 import { EntityId } from "../../../../src/shared/domain/EntityId";
 

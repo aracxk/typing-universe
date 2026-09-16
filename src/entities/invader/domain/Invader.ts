@@ -1,7 +1,7 @@
 import { Result } from "../../../shared/core/Result";
 import { Entity } from "../../../shared/domain/Entity";
 import type { EntityId } from "../../../shared/domain/EntityId";
-import type { ActiveWord } from "../../core/domain/ActiveWord";
+import type { ActiveWord } from "../../word/domain/ActiveWord";
 import { InvaderError } from "./InvaderError";
 
 export class Invader extends Entity<EntityId> {

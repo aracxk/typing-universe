@@ -28,7 +28,7 @@ jobs:
         run: npm ci --legacy-peer-deps
 
       - name: Run Biome (Lint & Format Check)
-        run: npx @biomejs/biome ci src tests
+        run: npx @biomejs/biome ci --error-on-warnings src tests
 
       - name: Run Typecheck
         run: npm run typecheck

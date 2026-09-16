@@ -1,0 +1,66 @@
+[
+	{
+		"id": "frt-1",
+		"word": "林檎",
+		"readings": ["ringo"],
+		"category": "general_fruits",
+		"difficulty": "easy",
+		"description": "りんご"
+	},
+	{
+		"id": "frt-2",
+		"word": "蜜柑",
+		"readings": ["mikan"],
+		"category": "general_fruits",
+		"difficulty": "easy",
+		"description": "みかん"
+	},
+	{
+		"id": "frt-3",
+		"word": "西瓜",
+		"readings": ["suika"],
+		"category": "general_fruits",
+		"difficulty": "easy",
+		"description": "すいか"
+	},
+	{
+		"id": "frt-4",
+		"word": "桃",
+		"readings": ["momo"],
+		"category": "general_fruits",
+		"difficulty": "easy",
+		"description": "もも"
+	},
+	{
+		"id": "frt-5",
+		"word": "葡萄",
+		"readings": ["budou"],
+		"category": "general_fruits",
+		"difficulty": "normal",
+		"description": "ぶどう"
+	},
+	{
+		"id": "frt-6",
+		"word": "苺",
+		"readings": ["ichigo"],
+		"category": "general_fruits",
+		"difficulty": "normal",
+		"description": "いちご"
+	},
+	{
+		"id": "frt-7",
+		"word": "無花果",
+		"readings": ["ichijiku"],
+		"category": "general_fruits",
+		"difficulty": "hard",
+		"description": "いちじく"
+	},
+	{
+		"id": "frt-8",
+		"word": "鳳梨",
+		"readings": ["painappuru"],
+		"category": "general_fruits",
+		"difficulty": "hard",
+		"description": "パイナップル"
+	}
+]

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { ActiveWord } from "../../../../src/entities/core/domain/ActiveWord";
-import { TargetWord } from "../../../../src/entities/core/domain/TargetWord";
-import { TargetWordError } from "../../../../src/entities/core/domain/TargetWordError";
+import { ActiveWord } from "../../../../src/entities/word/domain/ActiveWord";
+import { TargetWord } from "../../../../src/entities/word/domain/TargetWord";
+import { TargetWordError } from "../../../../src/entities/word/domain/TargetWordError";
 import { Result } from "../../../../src/shared/core/Result";
 import { EntityId } from "../../../../src/shared/domain/EntityId";
 
