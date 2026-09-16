@@ -1,13 +1,19 @@
-import { ActiveWord } from "../../../entities/core/domain/ActiveWord";
-import { TargetWord } from "../../../entities/core/domain/TargetWord";
 import { Invader } from "../../../entities/invader/domain/Invader";
 import { InvaderGameEngine } from "../../../entities/invader/domain/InvaderGameEngine";
+import { ActiveWord } from "../../../entities/word/domain/ActiveWord";
+import type { TargetWord } from "../../../entities/word/domain/TargetWord";
+import type { WordDifficultyType } from "../../../entities/word/domain/WordDifficulty";
+import {
+	type IWordRepository,
+	wordRepository,
+} from "../../../entities/word/repository/WordRepository";
 import { EntityId } from "../../../shared/domain/EntityId";
 import { SoundEngine } from "../../../shared/lib/audio/SoundEngine";
 
 export class InvaderGameStore {
 	public engine: InvaderGameEngine;
 	public sound: SoundEngine;
+	private wordRepository: IWordRepository;
 
 	private listeners: Set<() => void> = new Set();
 	private lastTime = performance.now();
@@ -17,7 +23,6 @@ export class InvaderGameStore {
 
 	public tickCount = 0;
 	public hasStarted = false;
-	private lastHasStarted = false;
 	private lastScore = 0;
 	private lastLives = 3;
 	private lastStatus = "playing";
@@ -26,9 +31,10 @@ export class InvaderGameStore {
 	private lastFocusedId: string | null = null;
 	private lastKills = 0;
 
-	constructor() {
+	constructor(wordRepositoryInstance: IWordRepository = wordRepository) {
 		this.engine = InvaderGameEngine.create(EntityId.create("engine"), 600);
 		this.sound = new SoundEngine();
+		this.wordRepository = wordRepositoryInstance;
 	}
 
 	public subscribe = (listener: () => void) => {
@@ -100,7 +106,7 @@ export class InvaderGameStore {
 		this.tickCount++;
 
 		this.lastTime = performance.now();
-		this.nextSpawnTime = performance.now() + 500;
+		this.nextSpawnTime = performance.now() + 200;
 
 		const loop = (time: number) => {
 			if (this.engine.status === "gameover") return;
@@ -130,43 +136,50 @@ export class InvaderGameStore {
 
 	public handleType(key: string) {
 		if (this.engine.status === "gameover") return;
-		if (/^[a-z-]$/i.test(key)) {
-			this.engine.type(key);
+		if (/^[a-z0-9-]$/i.test(key)) {
+			this.engine.type(key.toLowerCase());
 			this.notifyIfChanged();
 		}
 	}
 
-	private spawnRandomInvader() {
-		const words = [
-			{ w: "林檎", r: ["ringo"] },
-			{ w: "蜜柑", r: ["mikan"] },
-			{ w: "西瓜", r: ["suika"] },
-			{ w: "葡萄", r: ["budou"] },
-			{ w: "無花果", r: ["ichijiku"] },
-			{ w: "SyntaxError", r: ["syntaxerror"] },
-			{ w: "NullPointer", r: ["nullpointer"] },
-			{ w: "404NotFound", r: ["404notfound"] },
-			{ w: "InfinityLoop", r: ["infinityloop"] },
-			{ w: "MemoryLeak", r: ["memoryleak"] },
-		];
-		const pick = words[Math.floor(Math.random() * words.length)];
-		const targetResult = TargetWord.create(pick.w, pick.r);
-		if (!targetResult.success) return;
+	private getDifficultyForStage(stage: number): WordDifficultyType {
+		if (stage <= 1) return "easy";
+		if (stage === 2) return Math.random() < 0.6 ? "easy" : "normal";
+		if (stage === 3) return Math.random() < 0.7 ? "normal" : "hard";
+		return Math.random() < 0.4 ? "normal" : "hard";
+	}
 
+	private spawnRandomInvader() {
+		const difficulty = this.getDifficultyForStage(this.engine.stageLevel);
+		const targetResult = this.wordRepository.getRandomTargetWord({
+			difficulty,
+		});
+
+		if (!targetResult.success) {
+			const fallback = this.wordRepository.getRandomTargetWord();
+			if (!fallback.success) return;
+			this.createAndSpawnInvader(fallback.value);
+			return;
+		}
+
+		this.createAndSpawnInvader(targetResult.value);
+	}
+
+	private createAndSpawnInvader(target: TargetWord) {
 		this.invaderIdCounter++;
 		const active = ActiveWord.create(
 			EntityId.create(`word-${this.invaderIdCounter}`),
-			targetResult.value,
+			target,
 		);
 
 		const x = Math.random() * 600 + 100;
-		const speed = Math.random() * 15 + 10;
+		const speed = Math.random() * 20 + 25;
 
 		const invResult = Invader.create(
 			EntityId.create(`inv-${this.invaderIdCounter}`),
 			active,
 			x,
-			-30,
+			40,
 			speed,
 		);
 		if (invResult.success) {

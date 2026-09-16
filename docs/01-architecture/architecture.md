@@ -25,7 +25,7 @@ FSDでは「機能（Feature）」単位で縦割りにすることで、機能�
     - `features/invader/`: `spawn-invader` 等
 - **`entities/`**: 
   - ビジネス上の概念やドメインロジック（DDDにおけるEntity, Value Object）。
-    - `entities/core/`: `game-session`, `active-word` 等
+    - `entities/word/`: `game-session`, `active-word` 等
     - `entities/invader/`: `invader`, `invader-game-engine` 等
 - **`shared/`**: 
   - プロジェクト全体で使い回すUIコンポーネント（ボタン等）、ユーティリティ関数、定数。
