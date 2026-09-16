@@ -12,6 +12,11 @@ export function useInvaderGame() {
 
 	useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
 
+	// 初期データのロード
+	useEffect(() => {
+		store.initialize();
+	}, [store]);
+
 	useEffect(() => {
 		return () => store.stop();
 	}, [store]);
@@ -24,7 +29,9 @@ export function useInvaderGame() {
 				(store.engine.status !== "playing" || !store.rafId)
 			) {
 				e.preventDefault();
-				store.start();
+				if (store.isReady) {
+					store.start();
+				}
 				return;
 			}
 			store.handleType(e.key);
@@ -37,5 +44,6 @@ export function useInvaderGame() {
 		engine: store.engine,
 		sound: store.sound,
 		hasStarted: store.hasStarted,
+		isReady: store.isReady,
 	};
 }

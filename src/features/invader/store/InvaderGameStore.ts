@@ -23,6 +23,8 @@ export class InvaderGameStore {
 
 	public tickCount = 0;
 	public hasStarted = false;
+	public isReady = false;
+	private lastReady = false;
 	private lastScore = 0;
 	private lastLives = 3;
 	private lastStatus = "playing";
@@ -43,6 +45,18 @@ export class InvaderGameStore {
 			this.listeners.delete(listener);
 		};
 	};
+
+	public async initialize() {
+		if (this.isReady) return;
+		// インベーダーゲームで使用するデフォルトのカテゴリをロード
+		await this.wordRepository.loadCategories([
+			"it_errors",
+			"programming",
+			"web_tech",
+		]);
+		this.isReady = true;
+		this.notifyIfChanged();
+	}
 
 	public getSnapshot = () => {
 		return this.tickCount;
@@ -72,7 +86,8 @@ export class InvaderGameStore {
 			this.engine.status !== this.lastStatus ||
 			this.engine.combo !== this.lastCombo ||
 			this.engine.stageLevel !== this.lastStage ||
-			this.engine.focusedInvaderId?.value !== this.lastFocusedId
+			this.engine.focusedInvaderId?.value !== this.lastFocusedId ||
+			this.isReady !== this.lastReady
 		) {
 			this.lastScore = this.engine.score;
 			this.lastLives = this.engine.lives;
@@ -80,6 +95,7 @@ export class InvaderGameStore {
 			this.lastCombo = this.engine.combo;
 			this.lastStage = this.engine.stageLevel;
 			this.lastFocusedId = this.engine.focusedInvaderId?.value || null;
+			this.lastReady = this.isReady;
 			changed = true;
 		}
 

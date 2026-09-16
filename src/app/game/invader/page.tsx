@@ -10,7 +10,7 @@ import { useInvaderGame } from "../../../features/invader/hooks/useInvaderGame";
 import { useInvaderUI } from "../../../features/invader/hooks/useInvaderUI";
 
 export default function InvaderGamePage() {
-	const { engine, sound, hasStarted } = useInvaderGame();
+	const { engine, sound, hasStarted, isReady } = useInvaderGame();
 	const { soundEnabled, toggleSound } = useInvaderUI(sound);
 
 	return (
@@ -24,7 +24,7 @@ export default function InvaderGamePage() {
 					<InvaderCanvas engine={engine} />
 
 					{engine.status === "playing" && !hasStarted && engine.score === 0 && (
-						<InvaderStartScreen />
+						<InvaderStartScreen isReady={isReady} />
 					)}
 
 					{engine.status === "gameover" && (

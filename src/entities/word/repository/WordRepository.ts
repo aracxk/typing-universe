@@ -1,5 +1,4 @@
 import { Result } from "../../../shared/core/Result";
-import { MASTER_WORDS } from "../data/words";
 import { TargetWord } from "../domain/TargetWord";
 import type { WordCategoryType } from "../domain/WordCategory";
 import type { WordDefinition } from "../domain/WordDefinition";
@@ -15,13 +14,38 @@ export interface IWordRepository {
 	filter(options: WordFilterOptions): readonly WordDefinition[];
 	getRandomDefinition(options?: WordFilterOptions): WordDefinition | null;
 	getRandomTargetWord(options?: WordFilterOptions): Result<TargetWord, Error>;
+	loadCategories(categories: WordCategoryType[]): Promise<void>;
+	isLoaded(): boolean;
 }
 
 export class InMemoryWordRepository implements IWordRepository {
-	private readonly words: readonly WordDefinition[];
+	private words: WordDefinition[] = [];
+	private loadedCategories = new Set<WordCategoryType>();
 
-	constructor(words: readonly WordDefinition[] = MASTER_WORDS) {
-		this.words = words;
+	public isLoaded(): boolean {
+		return this.loadedCategories.size > 0;
+	}
+
+	public async loadCategories(categories: WordCategoryType[]): Promise<void> {
+		const fetchPromises = categories.map(async (category) => {
+			if (this.loadedCategories.has(category)) return;
+
+			try {
+				const res = await fetch(`/data/words/${category}.json`);
+				if (!res.ok) {
+					throw new Error(
+						`Failed to fetch ${category}.json: ${res.statusText}`,
+					);
+				}
+				const data = (await res.json()) as WordDefinition[];
+				this.words.push(...data);
+				this.loadedCategories.add(category);
+			} catch (e) {
+				console.error(`Error loading category ${category}:`, e);
+			}
+		});
+
+		await Promise.all(fetchPromises);
 	}
 
 	public getAll(): readonly WordDefinition[] {
@@ -65,6 +89,12 @@ export class InMemoryWordRepository implements IWordRepository {
 			return Result.err(targetResult.error);
 		}
 		return Result.ok(targetResult.value);
+	}
+
+	/** テスト用に強制的に単語をセットするメソッド */
+	public __setWordsForTesting(words: WordDefinition[]) {
+		this.words = [...words];
+		this.loadedCategories.add(words[0]?.category || "it_errors");
 	}
 }
 

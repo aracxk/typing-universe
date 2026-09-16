@@ -29,7 +29,8 @@ describe("InMemoryWordRepository", () => {
 
 	it("getAllを呼んだ場合、登録されているすべての単語が返される", () => {
 		// Arrange
-		const repo = new InMemoryWordRepository(dummyWords);
+		const repo = new InMemoryWordRepository();
+		repo.__setWordsForTesting([...dummyWords]);
 
 		// Act
 		const words = repo.getAll();
@@ -40,7 +41,8 @@ describe("InMemoryWordRepository", () => {
 
 	it("カテゴリでフィルタした場合、一致する単語のみが返される", () => {
 		// Arrange
-		const repo = new InMemoryWordRepository(dummyWords);
+		const repo = new InMemoryWordRepository();
+		repo.__setWordsForTesting([...dummyWords]);
 
 		// Act
 		const fruits = repo.filter({ category: "general_fruits" });
@@ -54,7 +56,8 @@ describe("InMemoryWordRepository", () => {
 
 	it("難易度でフィルタした場合、一致する単語のみが返される", () => {
 		// Arrange
-		const repo = new InMemoryWordRepository(dummyWords);
+		const repo = new InMemoryWordRepository();
+		repo.__setWordsForTesting([...dummyWords]);
 
 		// Act
 		const easyWords = repo.filter({ difficulty: "easy" });
@@ -69,7 +72,8 @@ describe("InMemoryWordRepository", () => {
 
 	it("カテゴリと難易度の両方でフィルタした場合、両方に一致する単語のみが返される", () => {
 		// Arrange
-		const repo = new InMemoryWordRepository(dummyWords);
+		const repo = new InMemoryWordRepository();
+		repo.__setWordsForTesting([...dummyWords]);
 
 		// Act
 		const result = repo.filter({
@@ -84,7 +88,8 @@ describe("InMemoryWordRepository", () => {
 
 	it("一致する単語がない条件でgetRandomDefinitionを呼んだ場合、nullが返される", () => {
 		// Arrange
-		const repo = new InMemoryWordRepository(dummyWords);
+		const repo = new InMemoryWordRepository();
+		repo.__setWordsForTesting([...dummyWords]);
 
 		// Act
 		const result = repo.getRandomDefinition({
@@ -98,7 +103,8 @@ describe("InMemoryWordRepository", () => {
 
 	it("一致する単語がある条件でgetRandomTargetWordを呼んだ場合、TargetWordが正常に返される", () => {
 		// Arrange
-		const repo = new InMemoryWordRepository(dummyWords);
+		const repo = new InMemoryWordRepository();
+		repo.__setWordsForTesting([...dummyWords]);
 
 		// Act
 		const result = repo.getRandomTargetWord({
@@ -116,7 +122,8 @@ describe("InMemoryWordRepository", () => {
 
 	it("一致する単語がない条件でgetRandomTargetWordを呼んだ場合、エラーが返される", () => {
 		// Arrange
-		const repo = new InMemoryWordRepository(dummyWords);
+		const repo = new InMemoryWordRepository();
+		repo.__setWordsForTesting([...dummyWords]);
 
 		// Act
 		const result = repo.getRandomTargetWord({
@@ -141,7 +148,8 @@ describe("InMemoryWordRepository", () => {
 				difficulty: "easy",
 			},
 		];
-		const repo = new InMemoryWordRepository(brokenWords);
+		const repo = new InMemoryWordRepository();
+		repo.__setWordsForTesting([...brokenWords]);
 
 		// Act
 		const result = repo.getRandomTargetWord();
