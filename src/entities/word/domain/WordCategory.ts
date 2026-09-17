@@ -24,6 +24,12 @@ export class WordCategory extends ValueObject {
 		super();
 	}
 
+	/**
+	 * 文字列から WordCategory を生成します。
+	 *
+	 * @param value カテゴリ名文字列（"it_errors", "programming", "web_tech", "general_fruits" のいずれか）
+	 * @returns 有効なカテゴリの場合は WordCategory、無効な場合は Error
+	 */
 	public static create(value: string): Result<WordCategory, Error> {
 		if (!VALID_WORD_CATEGORIES.includes(value as WordCategoryType)) {
 			return Result.err(new Error(`不正なカテゴリです: ${value}`));
@@ -31,6 +37,12 @@ export class WordCategory extends ValueObject {
 		return Result.ok(new WordCategory(value as WordCategoryType));
 	}
 
+	/**
+	 * 他の WordCategory との値の一致を判定します。
+	 *
+	 * @param other 比較対象の WordCategory
+	 * @returns カテゴリ文字列が一致する場合 true
+	 */
 	public equals(other: this): boolean {
 		if (other === null || other === undefined) {
 			return false;

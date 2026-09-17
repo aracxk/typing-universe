@@ -2,8 +2,17 @@ import { Entity } from "../../../shared/domain/Entity";
 import type { EntityId } from "../../../shared/domain/EntityId";
 import type { Invader } from "./Invader";
 
+/**
+ * ゲームの進行状態（プレイ中かゲームオーバーか）。
+ */
 export type GameStatus = "playing" | "gameover";
 
+/**
+ * インベーダーゲームのコアルールと進行状態を管理するドメインエンジン（エンティティ）。
+ *
+ * 敵のスポーン・落下（Tick）、タイピング判定（ターゲットロックオンと撃破）、
+ * コンボ・スコア計算、ライフ減少、ゲームオーバー判定を一元管理します。
+ */
 export class InvaderGameEngine extends Entity<EntityId> {
 	private _invaders: Invader[] = [];
 	private _score = 0;
@@ -25,15 +34,32 @@ export class InvaderGameEngine extends Entity<EntityId> {
 		this._gameHeight = gameHeight;
 	}
 
+	/**
+	 * インベーダーゲームエンジンのインスタンスを生成します。
+	 *
+	 * @param id エンジンの一意な識別子
+	 * @param gameHeight キャンバスの底辺Y座標（防衛失敗判定となる高さpx）
+	 * @returns 生成された InvaderGameEngine
+	 */
 	public static create(id: EntityId, gameHeight: number): InvaderGameEngine {
 		return new InvaderGameEngine(id, gameHeight);
 	}
 
+	/**
+	 * 敵インベーダーを画面上に出現させます。ゲームオーバー時は無視されます。
+	 *
+	 * @param invader 追加する Invader インスタンス
+	 */
 	public spawn(invader: Invader): void {
 		if (this._status !== "playing") return;
 		this._invaders.push(invader);
 	}
 
+	/**
+	 * 時間経過に合わせて全ての敵を前進させ、底辺到達時の被弾・ゲームオーバー判定を行います。
+	 *
+	 * @param deltaTimeMs 前回フレームからの経過時間（ミリ秒）
+	 */
 	public tick(deltaTimeMs: number): void {
 		if (this._status !== "playing") return;
 
@@ -58,6 +84,12 @@ export class InvaderGameEngine extends Entity<EntityId> {
 		}
 	}
 
+	/**
+	 * プレイヤーのキーボード打鍵を処理し、ロックオン中または最も手前の敵に対して正誤判定を行います。
+	 *
+	 * @param char 入力された1文字
+	 * @returns いずれかの敵に適合した場合は true、ミスの場合は false（コンボリセット）
+	 */
 	public type(char: string): boolean {
 		if (this._status !== "playing") return false;
 
