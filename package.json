@@ -10,7 +10,8 @@
     "test": "vitest",
     "check": "biome check --write src tests",
     "typecheck": "tsc --noEmit",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "next": "16.3.5",
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.13",
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
     "@testing-library/dom": "10.4.2",
     "@testing-library/react": "16.3.3",
