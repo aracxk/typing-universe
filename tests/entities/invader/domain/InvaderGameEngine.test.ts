@@ -154,11 +154,11 @@ describe("InvaderGameEngine", () => {
 
 			const setScoreAndAcc = (s: number, acc: number) => {
 				// biome-ignore lint/suspicious/noExplicitAny: テスト目的でのプライベート変数アクセス
-				(engine as any)._score = s;
+				(engine["_metrics"] as any)._score = s;
 				// biome-ignore lint/suspicious/noExplicitAny: テスト目的でのプライベート変数アクセス
-				(engine as any)._totalTyped = 100;
+				(engine["_metrics"] as any)._totalTyped = 100;
 				// biome-ignore lint/suspicious/noExplicitAny: テスト目的でのプライベート変数アクセス
-				(engine as any)._correctTyped = acc;
+				(engine["_metrics"] as any)._correctTyped = acc;
 			};
 
 			setScoreAndAcc(3000, 100);
