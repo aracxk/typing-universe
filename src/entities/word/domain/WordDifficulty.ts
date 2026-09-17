@@ -15,21 +15,35 @@ export const VALID_WORD_DIFFICULTIES: readonly WordDifficultyType[] = [
  * 文字数や単語構造に基づき、ゲーム進行・ステージ難易度と連動します。
  */
 export class WordDifficulty extends ValueObject {
+	private static readonly _cache = new Map<
+		WordDifficultyType,
+		WordDifficulty
+	>();
+
 	private constructor(public readonly value: WordDifficultyType) {
 		super();
 	}
 
 	/**
 	 * 文字列から WordDifficulty を生成します。
+	 * Flyweightパターンにより、同じ難易度のインスタンスはキャッシュから再利用されます。
 	 *
-	 * @param value 難易度文字列（"easy", "normal", "hard" のいずれか）
-	 * @returns 有効な難易度の場合は WordDifficulty、無効な場合は Error
+	 * @param value 難易度名文字列
+	 * @returns 成功時は WordDifficulty、失敗時は Error を含む Result
 	 */
 	public static create(value: string): Result<WordDifficulty, Error> {
 		if (!VALID_WORD_DIFFICULTIES.includes(value as WordDifficultyType)) {
 			return Result.err(new Error(`不正な難易度です: ${value}`));
 		}
-		return Result.ok(new WordDifficulty(value as WordDifficultyType));
+
+		const typedValue = value as WordDifficultyType;
+		let instance = WordDifficulty._cache.get(typedValue);
+		if (!instance) {
+			instance = new WordDifficulty(typedValue);
+			WordDifficulty._cache.set(typedValue, instance);
+		}
+
+		return Result.ok(instance);
 	}
 
 	/**
