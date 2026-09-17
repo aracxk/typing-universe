@@ -10,6 +10,12 @@ import {
 import { EntityId } from "../../../shared/domain/EntityId";
 import { SoundEngine } from "../../../shared/lib/audio/SoundEngine";
 
+/**
+ * インベーダーゲームのUI状態とゲームループ（requestAnimationFrame）を仲介する状態管理ストア。
+ *
+ * React の再描画（useSyncExternalStore）を最小限に抑えつつ、
+ * 60FPSのゲームループ、効果音トリガー、非同期単語ロード、キーボード入力を統括します。
+ */
 export class InvaderGameStore {
 	public engine: InvaderGameEngine;
 	public sound: SoundEngine;
@@ -46,6 +52,9 @@ export class InvaderGameStore {
 		};
 	};
 
+	/**
+	 * 単語データ（JSON）を非同期プリロードし、ゲームの出撃準備を整えます。
+	 */
 	public async initialize() {
 		if (this.isReady) return;
 		// インベーダーゲームで使用するデフォルトのカテゴリをロード
@@ -107,6 +116,9 @@ export class InvaderGameStore {
 		}
 	}
 
+	/**
+	 * ゲームエンジンを新規生成してゲームループ（60FPS）を開始します。
+	 */
 	public start() {
 		this.sound.init();
 		this.engine = InvaderGameEngine.create(EntityId.create("engine"), 600);
@@ -143,6 +155,9 @@ export class InvaderGameStore {
 		this.rafId = requestAnimationFrame(loop);
 	}
 
+	/**
+	 * ゲームループを停止し、アニメーションフレームをキャンセルします。
+	 */
 	public stop() {
 		if (this.rafId) {
 			cancelAnimationFrame(this.rafId);
@@ -150,6 +165,11 @@ export class InvaderGameStore {
 		}
 	}
 
+	/**
+	 * ユーザーのキーボード入力を処理し、ドメインエンジンのタイピング判定を実行します。
+	 *
+	 * @param key 入力されたキー文字列（英数字・ハイフンを小文字化して処理）
+	 */
 	public handleType(key: string) {
 		if (this.engine.status === "gameover") return;
 		if (/^[a-z0-9-]$/i.test(key)) {

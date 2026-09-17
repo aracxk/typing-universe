@@ -4,6 +4,11 @@ import type { EntityId } from "../../../shared/domain/EntityId";
 import type { ActiveWord } from "../../word/domain/ActiveWord";
 import { InvaderError } from "./InvaderError";
 
+/**
+ * インベーダー（画面上部から迫りくる敵）を表すエンティティ。
+ *
+ * プレイヤーが入力すべき単語（ActiveWord）と、2Dキャンバス上の位置（px）・落下速度（px/sec）を保持します。
+ */
 export class Invader extends Entity<EntityId> {
 	private _x: number;
 	private _y: number;
@@ -22,6 +27,16 @@ export class Invader extends Entity<EntityId> {
 		this._speed = speed;
 	}
 
+	/**
+	 * インベーダーのインスタンスを生成するファクトリメソッド。
+	 *
+	 * @param id インベーダーの一意な識別子
+	 * @param activeWord 紐付けるタイピング対象の単語
+	 * @param x 初期X座標 (0以上のpx)
+	 * @param y 初期Y座標 (0以上のpx。負数はエラー)
+	 * @param speed 落下速度 (px/sec。0より大きい正数)
+	 * @returns 成功時は Invader、不正な座標や速度の場合は InvaderError
+	 */
 	public static create(
 		id: EntityId,
 		activeWord: ActiveWord,
@@ -49,7 +64,9 @@ export class Invader extends Entity<EntityId> {
 	}
 
 	/**
-	 * 時間経過（deltaTime: ms）に合わせてY座標を更新する
+	 * 経過時間に応じてインベーダーのY座標を下方向へ更新します。
+	 *
+	 * @param deltaTimeMs 前回フレームからの経過時間（ミリ秒）
 	 */
 	public tick(deltaTimeMs: number): void {
 		const seconds = deltaTimeMs / 1000;
@@ -57,7 +74,9 @@ export class Invader extends Entity<EntityId> {
 	}
 
 	/**
-	 * インベーダーが撃破されたか（入力完了したか）
+	 * インベーダーが撃破されたか（紐付く ActiveWord のタイピングが完了したか）を判定します。
+	 *
+	 * @returns 単語の入力が完了していれば true
 	 */
 	public isDead(): boolean {
 		return this.activeWord.isCompleted();

@@ -1,6 +1,11 @@
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import { InvaderGameStore } from "../store/InvaderGameStore";
 
+/**
+ * インベーダーゲームのライフサイクル、キーボード入力イベント、状態購読を提供するカスタムフック。
+ *
+ * @returns engine（ゲームエンジン）、sound（サウンド制御）、hasStarted（開始フラグ）、isReady（データ準備完了フラグ）
+ */
 export function useInvaderGame() {
 	const storeRef = useRef<InvaderGameStore | null>(null);
 
