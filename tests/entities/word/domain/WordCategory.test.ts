@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { WordCategory } from "../../../../src/entities/word/domain/WordCategory";
+import { Result } from "../../../../src/shared/core/Result";
 
 describe("WordCategory", () => {
 	it("有効なカテゴリ名を指定した場合、WordCategoryインスタンスが生成される", () => {
@@ -63,5 +64,13 @@ describe("WordCategory", () => {
 			// @ts-expect-error テスト目的でundefinedを渡す
 			expect(cat.value.equals(undefined)).toBe(false);
 		}
+	});
+	it("Flyweightパターンにより同一のカテゴリには同じインスタンスを返す", () => {
+		// Arrange & Act
+		const cat1 = Result.unwrap(WordCategory.create("programming"));
+		const cat2 = Result.unwrap(WordCategory.create("programming"));
+
+		// Assert
+		expect(cat1).toBe(cat2);
 	});
 });

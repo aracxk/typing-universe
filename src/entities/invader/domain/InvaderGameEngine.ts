@@ -1,5 +1,6 @@
 import { Entity } from "../../../shared/domain/Entity";
 import type { EntityId } from "../../../shared/domain/EntityId";
+import { TypingMetrics } from "../../core/domain/TypingMetrics";
 import type { Invader } from "./Invader";
 
 /**
@@ -11,22 +12,18 @@ export type GameStatus = "playing" | "gameover";
  * インベーダーゲームのコアルールと進行状態を管理するドメインエンジン（エンティティ）。
  *
  * 敵のスポーン・落下（Tick）、タイピング判定（ターゲットロックオンと撃破）、
- * コンボ・スコア計算、ライフ減少、ゲームオーバー判定を一元管理します。
+ * ライフ減少、ゲームオーバー判定を一元管理します。
+ * スコアやコンボなどのタイピング評価は TypingMetrics に委譲します。
  */
 export class InvaderGameEngine extends Entity<EntityId> {
 	private _invaders: Invader[] = [];
-	private _score = 0;
 	private _lives = 3;
 	private _status: GameStatus = "playing";
 	private _focusedInvaderId: EntityId | null = null;
 	private _gameHeight: number;
 
-	// 新規追加: コンボと精度管理
-	private _combo = 0;
-	private _maxCombo = 0;
-	private _totalTyped = 0;
-	private _correctTyped = 0;
-	private _kills = 0;
+	// コアのタイピング評価基盤をコンポジション
+	private readonly _metrics = new TypingMetrics();
 	private _stageLevel = 1;
 
 	private constructor(id: EntityId, gameHeight: number) {
@@ -72,7 +69,7 @@ export class InvaderGameEngine extends Entity<EntityId> {
 
 				if (this._focusedInvaderId?.equals(invader.id)) {
 					this._focusedInvaderId = null;
-					this._combo = 0; // 防衛失敗でロックオン解除される場合、コンボも切れる
+					this._metrics.resetCombo(); // 防衛失敗でロックオン解除される場合、コンボも切れる
 				}
 				this._invaders.splice(i, 1);
 
@@ -92,8 +89,6 @@ export class InvaderGameEngine extends Entity<EntityId> {
 	 */
 	public type(char: string): boolean {
 		if (this._status !== "playing") return false;
-
-		this._totalTyped++; // 打鍵総数の加算
 
 		if (this._focusedInvaderId) {
 			const currentFocusedId = this._focusedInvaderId;
@@ -137,28 +132,21 @@ export class InvaderGameEngine extends Entity<EntityId> {
 	}
 
 	private handleHit(): void {
-		this._correctTyped++;
-		this._combo++;
-		if (this._combo > this._maxCombo) {
-			this._maxCombo = this._combo;
-		}
+		this._metrics.recordHit();
 	}
 
 	private handleMiss(): void {
-		this._combo = 0; // ミスでコンボリセット
+		this._metrics.recordMiss();
 	}
 
 	private handleKill(invader: Invader): void {
-		this._kills++;
 		this._focusedInvaderId = null;
 
-		// スコア計算：文字数 × (1 + (コンボ数/5) * 0.2)
 		const baseScore = invader.activeWord.target.word.length * 100;
-		const multiplier = 1 + Math.floor(this._combo / 5) * 0.2;
-		this._score += Math.round(baseScore * multiplier);
+		this._metrics.recordKill(baseScore);
 
 		// レベルアップ判定 (6キルごと)
-		if (this._kills % 6 === 0) {
+		if (this._metrics.kills > 0 && this._metrics.kills % 6 === 0) {
 			this._stageLevel++;
 		}
 
@@ -170,7 +158,7 @@ export class InvaderGameEngine extends Entity<EntityId> {
 	}
 
 	get score(): number {
-		return this._score;
+		return this._metrics.score;
 	}
 
 	get lives(): number {
@@ -186,23 +174,23 @@ export class InvaderGameEngine extends Entity<EntityId> {
 	}
 
 	get combo(): number {
-		return this._combo;
+		return this._metrics.combo;
 	}
 
 	get maxCombo(): number {
-		return this._maxCombo;
+		return this._metrics.maxCombo;
 	}
 
 	get totalTyped(): number {
-		return this._totalTyped;
+		return this._metrics.totalTyped;
 	}
 
 	get correctTyped(): number {
-		return this._correctTyped;
+		return this._metrics.correctTyped;
 	}
 
 	get kills(): number {
-		return this._kills;
+		return this._metrics.kills;
 	}
 
 	get stageLevel(): number {
@@ -210,15 +198,10 @@ export class InvaderGameEngine extends Entity<EntityId> {
 	}
 
 	get accuracy(): number {
-		if (this._totalTyped === 0) return 100;
-		return Math.round((this._correctTyped / this._totalTyped) * 100);
+		return this._metrics.accuracy;
 	}
 
 	get rank(): string {
-		if (this._score >= 15000 && this.accuracy >= 95) return "S+ (GOD ENGINEER)";
-		if (this._score >= 10000) return "S (TECH LEAD)";
-		if (this._score >= 6000) return "A (SENIOR DEV)";
-		if (this._score >= 3000) return "B (MID-LEVEL)";
-		return "C (JUNIOR DEV)";
+		return this._metrics.rank;
 	}
 }

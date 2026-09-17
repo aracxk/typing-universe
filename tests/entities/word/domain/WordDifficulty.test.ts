@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { WordDifficulty } from "../../../../src/entities/word/domain/WordDifficulty";
+import { Result } from "../../../../src/shared/core/Result";
 
 describe("WordDifficulty", () => {
 	it("有効な難易度名を指定した場合、WordDifficultyインスタンスが生成される", () => {
@@ -63,5 +64,13 @@ describe("WordDifficulty", () => {
 			// @ts-expect-error テスト目的でundefinedを渡す
 			expect(diff.value.equals(undefined)).toBe(false);
 		}
+	});
+	it("Flyweightパターンにより同一の難易度には同じインスタンスを返す", () => {
+		// Arrange & Act
+		const diff1 = Result.unwrap(WordDifficulty.create("normal"));
+		const diff2 = Result.unwrap(WordDifficulty.create("normal"));
+
+		// Assert
+		expect(diff1).toBe(diff2);
 	});
 });

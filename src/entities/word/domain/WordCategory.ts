@@ -20,21 +20,32 @@ export const VALID_WORD_CATEGORIES: readonly WordCategoryType[] = [
  * 有効なカテゴリ（"it_errors", "programming"など）のみを許容し、不正なカテゴリの生成を防ぎます。
  */
 export class WordCategory extends ValueObject {
+	private static readonly _cache = new Map<WordCategoryType, WordCategory>();
+
 	private constructor(public readonly value: WordCategoryType) {
 		super();
 	}
 
 	/**
 	 * 文字列から WordCategory を生成します。
+	 * Flyweightパターンにより、同じカテゴリのインスタンスはキャッシュから再利用されます。
 	 *
-	 * @param value カテゴリ名文字列（"it_errors", "programming", "web_tech", "general_fruits" のいずれか）
-	 * @returns 有効なカテゴリの場合は WordCategory、無効な場合は Error
+	 * @param value カテゴリ名文字列
+	 * @returns 成功時は WordCategory、失敗時は Error を含む Result
 	 */
 	public static create(value: string): Result<WordCategory, Error> {
 		if (!VALID_WORD_CATEGORIES.includes(value as WordCategoryType)) {
 			return Result.err(new Error(`不正なカテゴリです: ${value}`));
 		}
-		return Result.ok(new WordCategory(value as WordCategoryType));
+
+		const typedValue = value as WordCategoryType;
+		let instance = WordCategory._cache.get(typedValue);
+		if (!instance) {
+			instance = new WordCategory(typedValue);
+			WordCategory._cache.set(typedValue, instance);
+		}
+
+		return Result.ok(instance);
 	}
 
 	/**
