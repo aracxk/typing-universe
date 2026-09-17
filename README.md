@@ -1,5 +1,7 @@
 # Typing Universe
 
+🎮 **[Play Now (Vercel Live Demo)](https://typing-universe-opal.vercel.app/game/invader)**
+
 「Typing Universe」は、複数の異なるタイピングゲームを一つのプラットフォーム上で切り替えて遊べるWebアプリケーションです。（初期は「インベーダー形式」のタイピングゲームから実装を進めます）
 
 ## テクノロジースタック
