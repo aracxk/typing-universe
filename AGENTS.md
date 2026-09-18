@@ -37,11 +37,12 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
    - 外部依存（UI、API、状態管理ライブラリなど）をドメイン層に持ち込まない純粋性を維持します。
 2. **境界づけられたコンテキスト（Bounded Context）**:
    - 複数ゲームが存在するため、プラットフォーム共通の `core` ドメインと、各ゲーム固有のドメイン（`invader`等）を明確に分割し、ゲーム間の越境アクセスを禁止します。
-3. **技術スタック制限**:
+3. **技術スタックと外部ツール連携**:
    - インフラ：基本はVercelへのデプロイ（Supabase等のRDBは使用しない）。
    - BaaS：ランキングや現在プレイ人数のリアルタイム同期など、軽量なバックエンド機能が必要な場合は **Firebase (Realtime Database / Firestore)** の使用を許可する。
    - 認証：現状はログイン機能なし。
    - SEO対策：適切なメタタグ、OGP設定などを実装する。
+   - UIデザイン生成：**StitchMCP** を使用する場合は、常に共通プロジェクト (ID: `15453124055556575502` / [URL](https://stitch.withgoogle.com/projects/15453124055556575502?pli=1)) を指定し、デザインの一貫性を保つこと。
 
 ---
 
