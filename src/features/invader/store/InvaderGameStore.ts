@@ -8,6 +8,10 @@ import {
 	wordRepository,
 } from "../../../entities/word/repository/WordRepository";
 import { EntityId } from "../../../shared/domain/EntityId";
+import {
+	sendGameOverEvent,
+	sendGameStartEvent,
+} from "../../../shared/lib/analytics/events";
 import { SoundEngine } from "../../../shared/lib/audio/SoundEngine";
 
 /**
@@ -98,6 +102,14 @@ export class InvaderGameStore {
 			this.engine.focusedInvaderId?.value !== this.lastFocusedId ||
 			this.isReady !== this.lastReady
 		) {
+			if (this.engine.status === "gameover" && this.lastStatus === "playing") {
+				sendGameOverEvent(
+					"bug_invaders",
+					this.engine.score,
+					this.engine.stageLevel,
+				);
+			}
+
 			this.lastScore = this.engine.score;
 			this.lastLives = this.engine.lives;
 			this.lastStatus = this.engine.status;
@@ -122,6 +134,7 @@ export class InvaderGameStore {
 	public start() {
 		this.sound.init();
 		this.engine = InvaderGameEngine.create(EntityId.create("engine"), 600);
+		sendGameStartEvent("bug_invaders");
 		this.lastScore = 0;
 		this.lastLives = 3;
 		this.lastStatus = "playing";
