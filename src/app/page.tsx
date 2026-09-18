@@ -1,4 +1,5 @@
 import { HeroSection } from "../features/hub/components/HeroSection";
+import { GAMES } from "../features/hub/data/games";
 import { GameCard } from "../shared/ui/GameCard";
 
 export default function Home() {
@@ -37,28 +38,9 @@ export default function Home() {
 				</div>
 
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-					<GameCard
-						title="Bug Invaders"
-						description="本番環境に迫りくるバグの大群を、タイピングで次々と撃墜せよ。60FPSで動作するアーケードスタイルのタイピングシューティングゲーム。"
-						version="v1.0.0"
-						status="active"
-						difficulty="VARYING (1-10)"
-						minSpeed="65+ WPM"
-						combatMode="タイピング迎撃"
-						href="/game/invader"
-					/>
-
-					<GameCard
-						title="Typing RPG"
-						description="現在開発中の新しいタイピングゲーム。次なるアップデートをお待ちください。"
-						status="locked"
-					/>
-
-					<GameCard
-						title="Matrix Sprint"
-						description="60秒間のタイムアタック。限界のタイピングスピードに挑戦し、己の反射神経を試せ。"
-						status="locked"
-					/>
+					{GAMES.map((game) => (
+						<GameCard key={game.title} {...game} />
+					))}
 				</div>
 			</section>
 
