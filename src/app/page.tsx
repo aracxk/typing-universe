@@ -1,69 +1,83 @@
-import Image from "next/image";
+import { HeroSection } from "../features/hub/components/HeroSection";
+import { GameCard } from "../shared/ui/GameCard";
 
 export default function Home() {
 	return (
-		<div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-			<main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-				<Image
-					className="dark:invert h-5 w-[100px]"
-					src="/next.svg"
-					alt="Next.js logo"
-					width={100}
-					height={20}
-					priority
-				/>
-				<div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-					<h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-						To get started, edit the{" "}
-						<code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-							page.tsx
-						</code>{" "}
-						file.
-					</h1>
-					<p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-						Looking for a starting point or more instructions? Head over to{" "}
-						<a
-							href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-							className="font-medium text-zinc-950 dark:text-zinc-50"
-						>
-							Templates
-						</a>{" "}
-						or the{" "}
-						<a
-							href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-							className="font-medium text-zinc-950 dark:text-zinc-50"
-						>
-							Learning
-						</a>{" "}
-						center.
-					</p>
+		<main className="min-h-screen flex flex-col bg-background text-on-background font-body selection:bg-primary-container/30">
+			{/* HUD Navigation (簡易版) */}
+			<header className="fixed top-0 w-full h-14 bg-surface-container-lowest/80 backdrop-blur-md border-b border-outline-variant/40 z-50 flex items-center px-6 justify-between">
+				<div className="font-display font-bold text-primary tracking-widest text-lg">
+					TYPING UNIVERSE
 				</div>
-				<div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-					<a
-						className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-						href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						<Image
-							className="dark:invert h-[14px] w-4"
-							src="/vercel.svg"
-							alt="Vercel logomark"
-							width={16}
-							height={14}
-						/>
-						Deploy Now
-					</a>
-					<a
-						className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-						href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						Documentation
-					</a>
+				<div className="flex gap-6 font-mono text-xs text-outline hidden md:flex">
+					<span className="text-primary-container">ゲーム</span>
+					<span className="hover:text-on-surface cursor-pointer">
+						ランキング
+					</span>
+					<span className="hover:text-on-surface cursor-pointer">ログ</span>
 				</div>
-			</main>
-		</div>
+			</header>
+
+			<HeroSection />
+
+			{/* Game Cards Section */}
+			<section className="flex-1 w-full max-w-7xl mx-auto px-6 py-16 relative z-10">
+				<div className="flex items-center gap-4 mb-8 border-b border-outline-variant/20 pb-4">
+					<h2 className="font-display text-2xl font-bold text-primary">
+						ゲーム一覧
+					</h2>
+					<div className="hidden md:flex gap-2">
+						<span className="px-3 py-1 rounded bg-surface-container text-primary-container font-mono text-xs border border-primary-container/30">
+							すべて
+						</span>
+						<span className="px-3 py-1 rounded bg-surface-container-low text-outline font-mono text-xs border border-outline-variant/30 hover:border-outline-variant cursor-pointer">
+							防衛
+						</span>
+					</div>
+				</div>
+
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+					<GameCard
+						title="Bug Invaders"
+						description="本番環境に迫りくるバグの大群を、タイピングで次々と撃墜せよ。60FPSで動作するアーケードスタイルのタイピングシューティングゲーム。"
+						version="v1.0.0"
+						status="active"
+						difficulty="VARYING (1-10)"
+						minSpeed="65+ WPM"
+						combatMode="タイピング迎撃"
+						href="/game/invader"
+					/>
+
+					<GameCard
+						title="Typing RPG"
+						description="現在開発中の新しいタイピングゲーム。次なるアップデートをお待ちください。"
+						status="locked"
+					/>
+
+					<GameCard
+						title="Matrix Sprint"
+						description="60秒間のタイムアタック。限界のタイピングスピードに挑戦し、己の反射神経を試せ。"
+						status="locked"
+					/>
+				</div>
+			</section>
+
+			{/* Footer */}
+			<footer className="border-t border-outline-variant/30 bg-surface-container-lowest py-6 px-6 text-outline text-xs">
+				<div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+					<div className="flex items-center gap-3">
+						<span className="font-display text-primary font-bold">
+							TYPING UNIVERSE
+						</span>
+						<span className="text-outline-variant">|</span>
+						<span className="font-mono">Typing Universe v1.0.0</span>
+					</div>
+					<div className="flex items-center gap-2 font-mono">
+						<span className="w-1.5 h-1.5 rounded-full bg-secondary-fixed" />
+						<span className="text-secondary-fixed">全システム正常稼働中</span>
+					</div>
+				</div>
+			</footer>
+		</main>
 	);
 }
