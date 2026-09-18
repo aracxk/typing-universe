@@ -32,6 +32,7 @@ FSDでは「機能（Feature）」単位で縦割りにすることで、機能�
   - ユーザーにとって価値のある特定の機能（操作）。
     - `features/core/`: `keyboard-input` 等
     - `features/invader/`: `spawn-invader` 等
+    - `features/hub/`: トップページ（ハブ画面）特有のUI・ロジック
 - **`entities/`**: 
   - ビジネス上の概念やドメインロジック（DDDにおけるEntity, Value Object）。
     - `entities/word/`: `game-session`, `active-word` 等
