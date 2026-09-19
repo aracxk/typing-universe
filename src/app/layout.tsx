@@ -1,6 +1,7 @@
 import { GoogleAnalytics } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import { ThemeProvider } from "./ThemeProvider";
 import "./globals.css";
 
 const inter = Inter({
@@ -50,9 +51,12 @@ export default function RootLayout({
 		<html
 			lang="ja"
 			className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} h-full antialiased`}
+			suppressHydrationWarning
 		>
-			<body className="min-h-full flex flex-col font-sans bg-background text-on-surface dark">
-				{children}
+			<body className="min-h-full flex flex-col font-sans bg-background text-on-background transition-colors duration-300">
+				<ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+					{children}
+				</ThemeProvider>
 			</body>
 			{process.env.NEXT_PUBLIC_GA_ID && (
 				<GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
