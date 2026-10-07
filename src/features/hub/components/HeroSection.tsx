@@ -1,4 +1,10 @@
+"use client";
+
+import { usePresence } from "../../../shared/lib/firebase/hooks/usePresence";
+
 export const HeroSection = () => {
+	const { activeUsers } = usePresence();
+
 	return (
 		<section className="relative pt-24 pb-16 flex flex-col items-center justify-center text-center overflow-hidden z-10 border-b border-outline-variant/30">
 			{/* Background Cyber Grid */}
@@ -10,7 +16,7 @@ export const HeroSection = () => {
 			<div className="relative z-10 px-4">
 				<div className="mb-4 inline-flex items-center gap-2 px-3 py-1 rounded bg-surface-container border border-primary-container/40 text-primary-container font-mono text-xs">
 					<span className="w-2 h-2 rounded-full bg-primary-container animate-pulse" />
-					<span>システムオンライン</span>
+					<span>システムオンライン - {activeUsers} 人がプレイ中</span>
 				</div>
 
 				<h1
