@@ -1,8 +1,12 @@
 {
   "rules": {
+    ".read": false,
+    ".write": false,
     "presence": {
       ".read": true,
-      ".write": true
+      "$sessionId": {
+        ".write": "(!newData.exists() || newData.val() === true) && $sessionId.length >= 8 && $sessionId.length <= 64"
+      }
     }
   }
 }

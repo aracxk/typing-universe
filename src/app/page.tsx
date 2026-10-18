@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { HeroSection } from "../features/hub/components/HeroSection";
 import { ThemeToggle } from "../features/hub/components/ThemeToggle";
 import { GAMES } from "../features/hub/data/games";
@@ -12,13 +13,15 @@ export default function Home() {
 					TYPING UNIVERSE
 				</div>
 				<div className="flex items-center gap-6">
-					<div className="hidden md:flex gap-6 font-mono text-xs text-outline">
+					<nav className="hidden md:flex gap-6 font-mono text-xs text-outline">
 						<span className="text-primary-container">ゲーム</span>
-						<span className="hover:text-on-surface cursor-pointer">
+						<Link
+							href="/ranking"
+							className="hover:text-on-surface transition-colors"
+						>
 							ランキング
-						</span>
-						<span className="hover:text-on-surface cursor-pointer">ログ</span>
-					</div>
+						</Link>
+					</nav>
 					<ThemeToggle />
 				</div>
 			</header>

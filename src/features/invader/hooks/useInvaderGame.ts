@@ -29,6 +29,15 @@ export function useInvaderGame() {
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
 			if (e.ctrlKey || e.metaKey || e.altKey) return;
+			const target = e.target;
+			if (
+				target instanceof HTMLElement &&
+				(target.tagName === "INPUT" ||
+					target.tagName === "TEXTAREA" ||
+					target.isContentEditable)
+			) {
+				return;
+			}
 			if (
 				e.code === "Space" &&
 				(store.engine.status !== "playing" || !store.rafId)
@@ -50,5 +59,7 @@ export function useInvaderGame() {
 		sound: store.sound,
 		hasStarted: store.hasStarted,
 		isReady: store.isReady,
+		sessionToken: store.sessionToken,
+		restart: () => store.start(),
 	};
 }

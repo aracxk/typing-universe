@@ -6,7 +6,10 @@ resource "google_project_service" "default" {
     "firebase.googleapis.com",
     "firestore.googleapis.com",
     "firebasedatabase.googleapis.com",
-    "identitytoolkit.googleapis.com"
+    "identitytoolkit.googleapis.com",
+    "iam.googleapis.com",
+    "iamcredentials.googleapis.com",
+    "sts.googleapis.com"
   ])
   service            = each.key
   disable_on_destroy = false
@@ -37,7 +40,6 @@ resource "google_firestore_database" "default" {
   location_id = var.firestore_location
   type        = "FIRESTORE_NATIVE"
 
-  # Firestore APIが有効になってから作成する
   depends_on = [google_project_service.default]
 }
 
@@ -45,9 +47,60 @@ resource "google_firestore_database" "default" {
 resource "google_firebase_database_instance" "default" {
   provider    = google-beta
   project     = var.gcp_project_id
-  instance_id = "${var.gcp_project_id}-rtdb" # 一意なインスタンス名
+  instance_id = "${var.gcp_project_id}-rtdb"
   region      = var.rtdb_location
   type        = "USER_DATABASE"
 
   depends_on = [google_firebase_project.default]
+}
+
+# 6. Next.js サーバー (Vercel) から Firestore にアクセスする専用サービスアカウント
+resource "google_service_account" "ranking_server" {
+  provider     = google-beta
+  project      = var.gcp_project_id
+  account_id   = "typing-universe-server"
+  display_name = "Typing Universe Next.js Server (Ranking)"
+
+  depends_on = [google_project_service.default]
+}
+
+resource "google_project_iam_member" "ranking_firestore_user" {
+  provider = google-beta
+  project  = var.gcp_project_id
+  role     = "roles/datastore.user"
+  member   = "serviceAccount:${google_service_account.ranking_server.email}"
+}
+
+# 7. Workload Identity Pool & Provider (鍵ファイル不要の OIDC 連携)
+resource "google_iam_workload_identity_pool" "vercel" {
+  provider                  = google-beta
+  project                   = var.gcp_project_id
+  workload_identity_pool_id = "vercel-pool"
+  display_name              = "Vercel Workload Identity Pool"
+
+  depends_on = [google_project_service.default]
+}
+
+resource "google_iam_workload_identity_pool_provider" "vercel_oidc" {
+  provider                           = google-beta
+  project                            = var.gcp_project_id
+  workload_identity_pool_id          = google_iam_workload_identity_pool.vercel.workload_identity_pool_id
+  workload_identity_pool_provider_id = "vercel-oidc"
+  display_name                       = "Vercel OIDC Provider"
+
+  attribute_mapping = {
+    "google.subject" = "assertion.sub"
+  }
+
+  oidc {
+    issuer_uri = var.vercel_oidc_issuer_uri
+  }
+}
+
+resource "google_service_account_iam_member" "vercel_workload_identity_user" {
+  count              = var.vercel_oidc_subject != "" ? 1 : 0
+  provider           = google-beta
+  service_account_id = google_service_account.ranking_server.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "principal://iam.googleapis.com/${google_iam_workload_identity_pool.vercel.name}/subject/${var.vercel_oidc_subject}"
 }

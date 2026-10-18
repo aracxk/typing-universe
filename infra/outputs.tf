@@ -13,6 +13,16 @@ output "rtdb_url" {
   description = "Realtime Database の URL"
 }
 
+output "ranking_server_service_account_email" {
+  value       = google_service_account.ranking_server.email
+  description = "Next.js サーバー用のサービスアカウントメールアドレス"
+}
+
+output "vercel_workload_identity_provider_name" {
+  value       = google_iam_workload_identity_pool_provider.vercel_oidc.name
+  description = "Vercel OIDC 連携用の Workload Identity Provider リソース名"
+}
+
 # Webアプリ設定情報の取得（自動的に生成される構成情報を出力）
 data "google_firebase_web_app_config" "default" {
   provider   = google-beta
@@ -31,5 +41,5 @@ output "firebase_config_json" {
     projectId         = var.gcp_project_id
   })
   description = "クライアント用 .env に貼り付けるための Firebase Config (JSON)"
-  sensitive   = true # コンソールにそのまま出さないようにする
+  sensitive   = true
 }
