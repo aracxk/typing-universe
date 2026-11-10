@@ -8,9 +8,11 @@ import { InvaderLockonBar } from "../../../features/invader/components/ui/Invade
 import { InvaderStartScreen } from "../../../features/invader/components/ui/InvaderStartScreen";
 import { useInvaderGame } from "../../../features/invader/hooks/useInvaderGame";
 import { useInvaderUI } from "../../../features/invader/hooks/useInvaderUI";
+import { GameOverRankingSection } from "../../../features/ranking/components/GameOverRankingSection";
 
 export default function InvaderGamePage() {
-	const { engine, sound, hasStarted, isReady } = useInvaderGame();
+	const { engine, sound, hasStarted, isReady, sessionToken, restart } =
+		useInvaderGame();
 	const { soundEnabled, toggleSound } = useInvaderUI(sound);
 
 	return (
@@ -28,7 +30,20 @@ export default function InvaderGamePage() {
 					)}
 
 					{engine.status === "gameover" && (
-						<InvaderGameOverScreen engine={engine} />
+						<InvaderGameOverScreen engine={engine} onRetry={restart}>
+							<GameOverRankingSection
+								stats={{
+									gameId: "bug_invaders",
+									sessionToken,
+									score: engine.score,
+									kills: engine.kills,
+									maxCombo: engine.maxCombo,
+									correctTyped: engine.correctTyped,
+									totalTyped: engine.totalTyped,
+									stage: engine.stageLevel,
+								}}
+							/>
+						</InvaderGameOverScreen>
 					)}
 				</div>
 

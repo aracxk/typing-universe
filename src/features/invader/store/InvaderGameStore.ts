@@ -34,6 +34,7 @@ export class InvaderGameStore {
 	public tickCount = 0;
 	public hasStarted = false;
 	public isReady = false;
+	public sessionToken: string | null = null;
 	private lastReady = false;
 	private lastScore = 0;
 	private lastLives = 3;
@@ -132,9 +133,12 @@ export class InvaderGameStore {
 	 * ゲームエンジンを新規生成してゲームループ（60FPS）を開始します。
 	 */
 	public start() {
+		this.stop();
 		this.sound.init();
 		this.engine = InvaderGameEngine.create(EntityId.create("engine"), 600);
 		sendGameStartEvent("bug_invaders");
+		this.sessionToken = null;
+		this.requestSessionToken();
 		this.lastScore = 0;
 		this.lastLives = 3;
 		this.lastStatus = "playing";
@@ -145,6 +149,9 @@ export class InvaderGameStore {
 		this.lastFocusedId = null;
 		this.invaderIdCounter = 0;
 		this.tickCount++;
+		for (const listener of this.listeners) {
+			listener();
+		}
 
 		this.lastTime = performance.now();
 		this.nextSpawnTime = performance.now() + 200;
@@ -166,6 +173,27 @@ export class InvaderGameStore {
 			this.rafId = requestAnimationFrame(loop);
 		};
 		this.rafId = requestAnimationFrame(loop);
+	}
+
+	private async requestSessionToken() {
+		try {
+			const response = await fetch("/api/sessions", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ gameId: "bug_invaders" }),
+			});
+			if (!response.ok) return;
+			const data = (await response.json()) as { token?: unknown };
+			if (typeof data.token === "string") {
+				this.sessionToken = data.token;
+				this.tickCount++;
+				for (const listener of this.listeners) {
+					listener();
+				}
+			}
+		} catch {
+			// オフライン環境等でトークン取得に失敗した場合はゲームプレイのみ継続
+		}
 	}
 
 	/**

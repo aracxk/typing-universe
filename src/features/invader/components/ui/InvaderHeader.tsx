@@ -1,15 +1,20 @@
+import Link from "next/link";
+
 type Props = {
-	soundEnabled: boolean;
-	onToggleSound: () => void;
+	readonly soundEnabled: boolean;
+	readonly onToggleSound: () => void;
 };
 
 export function InvaderHeader({ soundEnabled, onToggleSound }: Props) {
 	return (
 		<header className="w-full max-w-5xl mb-4 flex items-center justify-between">
 			<div className="flex items-center space-x-3">
-				<div className="w-8 h-8 rounded bg-gradient-to-br from-[#00f3ff] to-[#00ff66] flex items-center justify-center text-black font-bold text-sm shadow-lg">
+				<Link
+					href="/"
+					className="w-8 h-8 rounded bg-gradient-to-br from-[#00f3ff] to-[#00ff66] flex items-center justify-center text-black font-bold text-sm shadow-lg"
+				>
 					B
-				</div>
+				</Link>
 				<div>
 					<span className="text-xs text-[#00f3ff] tracking-wider block font-bold">
 						BUG INVADERS
@@ -19,7 +24,13 @@ export function InvaderHeader({ soundEnabled, onToggleSound }: Props) {
 					</span>
 				</div>
 			</div>
-			<div>
+			<div className="flex items-center gap-2">
+				<Link
+					href="/ranking"
+					className="px-3 py-1.5 rounded border border-slate-700 hover:border-cyan-500 bg-slate-900 text-xs text-slate-300 hover:text-cyan-300 transition"
+				>
+					RANKING
+				</Link>
 				<button
 					type="button"
 					onClick={onToggleSound}
